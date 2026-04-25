@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Post - BlogProject{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <!-- Header -->
+        <div class="mb-5">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="fas fa-pen-fancy" style="color: #1e3a8a;"></i> Write Your Story
+            </h1>
+            <p class="lead text-muted">
+                Share your thoughts and inspire our community
+            </p>
+        </div>
+
+        <!-- Create Post Card -->
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-4 p-md-5">
+                <form method="post" enctype="multipart/form-data" novalidate id="createPostForm">
+                    {% csrf_token %}
+
+                    <!-- Title Field -->
+                    <div class="form-group mb-4">
+                        <label for="id_title" class="form-label">
+                            <i class="fas fa-heading" style="color: #1e3a8a;"></i>
+                            <strong>Post Title</strong>
+                        </label>
+                           <input type="text" 
+                               name="title" 
+                               id="id_title"
+                               class="form-control form-control-lg" 
+                               placeholder="Enter an engaging post title..."
+                               required
+                               maxlength="200"
+                               value="{{ form.title.value|default_if_none:'' }}">
+                        {% if form.title.errors %}
+                            <small class="text-danger d-block mt-2">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                {% for error in form.title.errors %}{{ error }}{% endfor %}
+                            </small>
+                        {% endif %}
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Make it clear, concise, and engaging (Max 200 characters)
+                        </small>
+                    </div>
+
+                    <!-- Content Field -->
+                    <div class="form-group mb-4">
+                        <label for="id_content" class="form-label">
+                            <i class="fas fa-align-left" style="color: #1e3a8a;"></i>
+                            <strong>Post Content</strong>
+                        </label>
+                        <textarea name="content" 
+                                  id="id_content"
+                                  class="form-control" 
+                                  rows="10"
+                                  placeholder="Write your amazing content here... Minimum 10 paragraphs recommended."
+                                  required>{{ form.content.value|default_if_none:'' }}</textarea>
+                        {% if form.content.errors %}
+                            <small class="text-danger d-block mt-2">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                {% for error in form.content.errors %}{{ error }}{% endfor %}
+                            </small>
+                        {% endif %}
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-pen-nib me-1"></i>
+                            Make it valuable, engaging, and well-written for your readers
+                        </small>
+                    </div>
+
+                    <!-- Image Upload Field -->
+                    <div class="form-group mb-5">
+                        <label for="id_image" class="form-label">
+                            <i class="fas fa-image" style="color: #1e3a8a;"></i>
+                            <strong>Featured Image</strong>
+                            <span class="badge bg-success ms-2">Recommended</span>
+                        </label>
+                        
+                        <div class="card border-2 border-dashed bg-light position-relative" 
+                             style="border-color: #ddd; cursor: pointer; transition: 0.3s;"
+                             onmouseover="this.style.borderColor='#1e3a8a'; this.style.backgroundColor='#eff6ff';"
+                             onmouseout="this.style.borderColor='#ddd'; this.style.backgroundColor='#f9fafb';">
+                            
+                            <div class="card-body text-center py-5" 
+                                 onclick="document.getElementById('id_image').click();" 
+                                 style="cursor: pointer;">
+                                
+                                <!-- Image Preview Section -->
+                                <div id="imagePreview" style="display: none; margin-bottom: 1.5rem;">
+                                    <img id="previewImg" src="" alt="Preview" 
+                                         style="max-width: 100%; max-height: 300px; border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <div class="mt-4">
+                                        <button type="button" class="btn btn-sm btn-outline-danger" id="removeImageBtn">
+                                            <i class="fas fa-times me-1"></i>Change Image
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Upload Prompt -->
+                                <div id="uploadPrompt">
+                                    <div style="font-size: 3rem; color: #1e3a8a; margin-bottom: 1rem;">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <p class="mb-1 fw-bold" style="color: #1f2937;">
+                                        Click to upload or drag & drop
+                                    </p>
+                                    <small class="text-muted">
+                                        PNG, JPG, GIF, WebP up to 5MB • Recommended: 1200x675px
+                                    </small>
+                                </div>
+
+                                <input type="file" 
+                                       name="image" 
+                                       id="id_image"
+                                       class="form-control d-none" 
+                                       accept="image/*"
+                                       onchange="previewImage(this)">
+                            </div>
+                        </div>
+
+                        {% if form.image.errors %}
+                            <small class="text-danger d-block mt-2">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                {% for error in form.image.errors %}{{ error }}{% endfor %}
+                            </small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Non-field Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong><i class="fas fa-shield-alt me-2"></i>Error!</strong>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2 gap-sm-0 d-sm-flex">
+                        <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                            <i class="fas fa-paper-plane me-2"></i>Publish Post
+                        </button>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg ms-sm-2">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="card border-0 shadow-sm mt-5" style="background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%); border-left: 4px solid #1e3a8a;">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">
+                    <i class="fas fa-lightbulb me-2" style="color: #f59e0b;"></i>Tips for Engaging Posts
+                </h5>
+                <ul class="mb-0" style="font-size: 0.95rem; line-height: 1.8;">
+                    <li><strong>Catchy Title:</strong> Make it descriptive and interesting</li>
+                    <li><strong>Featured Image:</strong> High-quality images grab more attention</li>
+                    <li><strong>Quality Content:</strong> Write with clarity and provide real value</li>
+                    <li><strong>Proofread:</strong> Check for typos and grammar before publishing</li>
+                    <li><strong>Formatting:</strong> Use paragraphs and breaks for readability</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Image Preview Function
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
+                uploadPrompt.style.display = 'none';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Remove Image Function
+    const removeImageBtn = document.getElementById('removeImageBtn');
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('id_image');
+            const preview = document.getElementById('imagePreview');
+            const uploadPrompt = document.getElementById('uploadPrompt');
+            
+            input.value = '';
+            preview.style.display = 'none';
+            uploadPrompt.style.display = 'block';
+        });
+    }
+
+    // Drag and Drop
+    const uploadArea = document.querySelector('.card.border-2');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        uploadArea.style.borderColor = '#1e3a8a';
+        uploadArea.style.backgroundColor = '#eff6ff';
+    }
+
+    function unhighlight(e) {
+        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.backgroundColor = '#f9fafb';
+    }
+
+    uploadArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        const input = document.getElementById('id_image');
+        input.files = files;
+
+        // Trigger preview
+        previewImage(input);
+    }
+</script>
+
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+
+    textarea {
+        resize: vertical;
+        font-family: 'Monaco', 'Menlo', monospace;
+    }
+
+    .form-control-lg {
+        padding: 0.75rem 1.25rem;
+    }
+</style>
+{% endblock %}
+

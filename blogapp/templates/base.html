@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BlogProject{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Smooth transitions for theme changes */
+        * {
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+
+        /* CSS variables for light and dark themes */
+        :root {
+            --primary-color: #1e3a8a;        /* Deep Navy Blue */
+            --secondary-color: #dc2626;      /* Elegant Red */
+            --accent-color: #f59e0b;         /* Gold Accent */
+
+            --bg: #f9fafb;                   /* Page background (light) */
+            --card-bg: #ffffff;              /* Card / panel background (light) */
+            --text: #111827;                 /* Primary text (light) */
+            --muted: #6b7280;                /* Muted text */
+            --muted-2: #9ca3af;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            --navbar-grad-start: var(--primary-color);
+            --navbar-grad-end: #2d5a96;
+            --navbar-text: #ffffff;
+
+            --footer-grad-start: #f9fafb;
+            --footer-grad-end: #f3f4f6;
+
+            --link-color: var(--primary-color);
+            --badge-bg: #eef2ff;
+        }
+
+        /* Dark-theme variable overrides */
+        body.dark-mode {
+            --bg: #060714;                   /* very dark background */
+            --card-bg: #0f1724;              /* dark card */
+            --text: #e6eef8;                 /* primary text on dark */
+            --muted: #9aa4b2;                /* muted on dark */
+            --muted-2: #7f8b99;
+            --card-shadow: 0 6px 24px rgba(2, 6, 23, 0.6);
+
+            --navbar-grad-start: #07112a;
+            --navbar-grad-end: #11203a;
+            --navbar-text: #e6eef8;
+
+            --footer-grad-start: #071122;
+            --footer-grad-end: #061219;
+
+            --link-color: #93c5fd;
+            --badge-bg: #152030;
+        }
+
+        /* Page base */
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--navbar-grad-start) 0%, var(--navbar-grad-end) 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: 0.3px;
+            color: var(--navbar-text) !important;
+        }
+
+        .navbar-nav .nav-link {
+            margin-left: 0.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            color: rgba(255,255,255,0.95) !important;
+        }
+
+        .navbar-nav .nav-link:hover { color: var(--accent-color) !important; transform: translateY(-2px); }
+
+        /* Toggle */
+        .dark-mode-toggle {
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--navbar-text);
+            padding: 0.45rem 0.8rem; border-radius: 0.4rem; cursor: pointer; font-weight:600;
+        }
+
+        .dark-mode-toggle:hover { border-color: var(--accent-color); background: rgba(255,255,255,0.08); }
+
+        /* Main layout */
+        main { flex: 1; padding: 2rem 0; }
+
+        /* Cards and panels */
+        .card {
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-radius: 0.75rem;
+            transition: all 0.25s ease;
+            background-color: var(--card-bg);
+            color: var(--text);
+        }
+
+        .card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(2,6,23,0.18); }
+
+        .card-img-top { height: 250px; object-fit: cover; border-radius: 0.75rem 0.75rem 0 0; }
+
+        /* Buttons */
+        .btn-primary { background-color: var(--primary-color); border: none; font-weight: 600; border-radius: 0.5rem; }
+        .btn-primary:hover { background-color: #1e40af; }
+        .btn-secondary { background-color: var(--secondary-color); border: none; font-weight: 600; border-radius: 0.5rem; }
+
+        .btn-outline-primary { color: var(--primary-color); border-color: var(--primary-color); }
+        .btn-outline-primary:hover { background-color: var(--primary-color); color: white; }
+
+        /* Links and text */
+        a { color: var(--link-color); }
+        a:hover { color: var(--accent-color); }
+
+        p, li, span, label { color: var(--text); }
+        h1,h2,h3,h4,h5,h6 { color: var(--text); }
+
+        /* Muted text */
+        .text-muted, .text-muted-custom { color: var(--muted) !important; }
+
+        /* Forms */
+        .form-control, .form-select, textarea, input { background-color: var(--card-bg); color: var(--text); border: 1.5px solid rgba(100,110,120,0.08); border-radius: 0.5rem; }
+        .form-control:focus, .form-select:focus { border-color: var(--accent-color); box-shadow: 0 0 0 0.2rem rgba(245,158,11,0.07); }
+
+        .form-label { font-weight: 600; margin-bottom: 0.6rem; color: var(--text); }
+
+        /* Alerts */
+        .alert { border: none; border-radius: 0.75rem; border-left: 4px solid; }
+        .alert-success { background-color: #ecfdf5; border-color: #10b981; color: #047857; }
+        .alert-danger { background-color: #fef2f2; border-color: #dc2626; color: #991b1b; }
+        .alert-info { background-color: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+        .alert-warning { background-color: #fffbeb; border-color: #f59e0b; color: #92400e; }
+
+        /* Footer */
+        .footer { background: linear-gradient(135deg, var(--footer-grad-start) 0%, var(--footer-grad-end) 100%); color: var(--muted); border-top: 1px solid rgba(0,0,0,0.06); margin-top: auto; padding: 2rem 0 1rem; text-align: center; font-size: 0.9rem; }
+
+        /* Badges, small UI elements */
+        .badge { background-color: var(--badge-bg); color: var(--text); }
+
+        /* Modal & dropdowns */
+        .modal-content, .dropdown-menu, .popover { background-color: var(--card-bg); color: var(--text); border-color: rgba(255,255,255,0.03); }
+
+        /* Tables */
+        .table { color: var(--text); }
+        .table thead th { color: var(--muted); }
+
+        /* Utility */
+        .post-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+        .action-btn { font-size: 0.9rem; padding: 0.4rem 0.8rem; margin-right: 0.5rem; border-radius: 0.4rem; }
+
+        /* Responsive */
+        @media (max-width: 768px) { main { padding: 1rem 0; } .card-img-top { height: 180px; } .navbar-brand { font-size: 1.3rem; } }
+
+        /* Dark-mode *overrides* for Bootstrap classes that need stronger contrast */
+        body.dark-mode .navbar { border-bottom-color: rgba(255,255,255,0.04); }
+        body.dark-mode .navbar-nav .nav-link { color: rgba(230,238,248,0.9) !important; }
+        body.dark-mode .navbar-brand { color: var(--navbar-text) !important; }
+
+        body.dark-mode .footer { color: #cbd5e1; border-top-color: rgba(255,255,255,0.03); }
+
+        body.dark-mode .text-muted, body.dark-mode .text-muted-custom { color: var(--muted) !important; }
+
+        body.dark-mode .btn-outline-secondary { color: var(--text); border-color: rgba(255,255,255,0.06); }
+        body.dark-mode .btn-outline-secondary:hover { background-color: rgba(255,255,255,0.02); }
+
+        body.dark-mode .bg-light { background-color: var(--card-bg) !important; }
+
+        /* Ensure form placeholders remain visible in dark mode */
+        body.dark-mode ::placeholder { color: rgba(230,238,248,0.55); }
+
+        /* Ensure small elements like badges, chips remain legible */
+        body.dark-mode .badge { background-color: #153040; color: #cfe6ff; }
+
+        /* Make sure inline icons and svg strokes are readable */
+        body.dark-mode .fa, body.dark-mode svg { color: var(--text); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-lg">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-pen-nib"></i> BlogProject
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'create_post' %}">
+                                <i class="fas fa-plus-circle"></i> Create Post
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button class="nav-link btn btn-link" type="submit" style="border: none; padding: 0.5rem 0; cursor: pointer;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">
+                                <i class="fas fa-user-plus"></i> Signup
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item">
+                        <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-lg">
+        <!-- Messages/Alerts -->
+        {% if messages %}
+        <div class="alerts-container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Content Block -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-lg">
+            <p>&copy; 2026 BlogProject. All rights reserved.</p>
+            <p style="font-size: 0.8rem; margin: 0.5rem 0; opacity: 0.8;">
+                A premium, elegant blog platform for sharing your thoughts and ideas.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dark Mode Script -->
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const htmlElement = document.documentElement;
+        const body = document.body;
+
+        // Load dark mode preference from localStorage
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

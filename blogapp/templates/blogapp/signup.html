@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - BlogProject{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-5">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <div style="font-size: 3rem; color: #dc2626; margin-bottom: 1rem;">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h2 class="fw-bold card-title">Create Account</h2>
+                    <p class="text-muted">Join our community of writers and readers</p>
+                </div>
+
+                <!-- Sign Up Form -->
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="id_username" class="form-label">
+                            <i class="fas fa-user me-2" style="color: #dc2626;"></i>Username
+                        </label>
+                        <input type="text" 
+                               name="username" 
+                               id="id_username" 
+                               class="form-control form-control-lg" 
+                               placeholder="Choose a username"
+                               required
+                               value="{{ form.username.value|default:'' }}"
+                               autofocus>
+                        {% if form.username.errors %}
+                            <small class="text-danger d-block mt-1">
+                                {% for error in form.username.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </small>
+                        {% endif %}
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Letters, digits and @/./+/-/_ only
+                        </small>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="id_email" class="form-label">
+                            <i class="fas fa-envelope me-2" style="color: #dc2626;"></i>Email Address
+                        </label>
+                        <input type="email" 
+                               name="email" 
+                               id="id_email" 
+                               class="form-control form-control-lg" 
+                               placeholder="your@email.com"
+                               required
+                               value="{{ form.email.value|default:'' }}">
+                        {% if form.email.errors %}
+                            <small class="text-danger d-block mt-1">
+                                {% for error in form.email.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="id_password1" class="form-label">
+                            <i class="fas fa-lock me-2" style="color: #dc2626;"></i>Password
+                        </label>
+                        <input type="password" 
+                               name="password1" 
+                               id="id_password1" 
+                               class="form-control form-control-lg" 
+                               placeholder="Create a strong password"
+                               required>
+                        {% if form.password1.errors %}
+                            <small class="text-danger d-block mt-1">
+                                {% for error in form.password1.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </small>
+                        {% endif %}
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-check-circle me-1"></i>
+                            Min 8 chars with letters and numbers
+                        </small>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-group">
+                        <label for="id_password2" class="form-label">
+                            <i class="fas fa-check-circle me-2" style="color: #dc2626;"></i>Confirm Password
+                        </label>
+                        <input type="password" 
+                               name="password2" 
+                               id="id_password2" 
+                               class="form-control form-control-lg" 
+                               placeholder="Confirm your password"
+                               required>
+                        {% if form.password2.errors %}
+                            <small class="text-danger d-block mt-1">
+                                {% for error in form.password2.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Non-field Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Sign Up Failed!</strong>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+                        <i class="fas fa-check me-2"></i>Create Account
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="text-center my-4">
+                    <small class="text-muted">or</small>
+                </div>
+
+                <!-- Login Link -->
+                <div class="card border-0" style="background: #f9fafb; border-radius: 0.5rem;">
+                    <div class="card-body text-center py-3">
+                        <small class="text-muted">Already have an account?</small>
+                        <br>
+                        <a href="{% url 'login' %}" class="btn btn-link btn-sm fw-bold" style="text-decoration: none; color: #1e3a8a;">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login Here
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="text-center mt-4">
+                    <small class="text-muted d-block">
+                        By signing up, you agree to our Terms & Conditions
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
