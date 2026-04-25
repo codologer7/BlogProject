@@ -3,7 +3,7 @@ services:
     name: blogproject
     runtime: python
     plan: free
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input
+    buildCommand: pip install --no-cache-dir --upgrade pip setuptools wheel && pip install --no-cache-dir -r requirements.txt && python manage.py collectstatic --no-input
     startCommand: gunicorn blogproject.wsgi --bind 0.0.0.0:$PORT
     envVars:
       - key: DEBUG
@@ -14,8 +14,5 @@ services:
         value: "*.onrender.com,localhost,127.0.0.1"
       - key: PYTHON_VERSION
         value: "3.11.7"
-
-databases:
-  - name: blogproject
-    plan: free
-    ipAllowList: []
+      - key: PIP_NO_CACHE_DIR
+        value: "1"
